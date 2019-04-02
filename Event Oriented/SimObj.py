@@ -105,7 +105,15 @@ class Intersection:
 #   Stores and outputs relevant data
 # runs entire time window of simulation, and stores data for each car's location and state in each time-frame.
 # Extremely high level of abstraction in this model...
-
+# Model Corridor
+class Corridor:
+    def __init__(self):
+        self.roadOrder = []
+        self.roadOrder.append(Tenth)
+        self.roadOrder.append(Elvth)
+        self.roadOrder.append(Twlth)
+        self.roadOrder.append(Thrtn)
+        self.roadOrder.append(Ftnth)
 
 
 # Initialize light times array for each intersection directions N,W,S,E in that order
@@ -157,15 +165,7 @@ r1.printRoad()
 
 print(Tenth.numCars)
 
-# Model Corridor
-class Corridor:
-    def __init__(self):
-        self.roadOrder = []
-        self.roadOrder.append(Tenth)
-        self.roadOrder.append(Elvth)
-        self.roadOrder.append(Twlth)
-        self.roadOrder.append(Thrtn)
-        self.roadOrder.append(Ftnth)
+
 
 peachtreeCor = Corridor()
 
