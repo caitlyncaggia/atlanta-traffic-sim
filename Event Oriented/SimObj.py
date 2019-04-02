@@ -7,6 +7,9 @@ def circ(v,mx):
     elif v < 0:
         return v + mx
 
+# Initialize global time elapsed sum counter
+tElap = 0
+
 # Define Car Class
 class Car:
     def __init__(self, iD, aggr, spd, path):
@@ -17,38 +20,48 @@ class Car:
         self.navig = path    # list of maneuvers corresponding to each intersection - describes the path of travel
         self.timeTo = 10*iD  # time to next event (first event is entry to corridor)
         self.Intersection = Tenth # by default, first intersection is tenth.. this will change
+        self.tnext = self.timeTo
+        self.timeIn = self.timeTo
+        self.timeOut = 0
 
     # Define event: Pass Light
     def evnt(self, evID):
         if evID == 1:  # car moves from one intersection to the next
-            self.passLight(self.Intersection, peachtreeCor)
+            self.passLight(self.Intersection)
         elif evID == 2:     # car stops at stop light
-            self.stopLight(self.Intersection, peachtreeCor)
+            self.stopLight(self.Intersection)
         elif evID == 3:     # car turns right
-            self.turnRight(self.Intersection, peachtreeCor)
+            self.turnRight(self.Intersection)
         elif evID == 4:     # car turns left
-            self.turnLeft(self.Intersection, peachtreeCor)
+            self.turnLeft(self.Intersection)
         else:               # others?
             print("unidentified Event ID")
 
-    def passLight(self, intersection, corridor):
+    def passLight(self, intersection):
         # first move car from old queue to new queue
-            intersection.carOut(self)
-            corridor.roadOrder[corridor.roadOrder.index(intersection) + 1].carIn(self)
+        intersection.carOut(self)
+        intersection.next.carIn(self)
         # compute time to stop at next light (maxCars - numCars
-            tnext = corridor.roadOrder[corridor.roadOrder.index(intersection) + 1].numCars
-            return tnext
-    def stopLight(self, intersection, corridor):
+        self.tnext = intersection.next.numCars
+        return self.tnext
+    def stopLight(self, intersection):
             tnext = intersection.numCars
             return tnext
 
-    def turnRight(self, intersection, corridor):
+    def turnRight(self, intersection):
+        self.timeOut = tElap
+        intersection.carOut(self)
         return False
 # not developed yet
 
-    def turnLeft(self, intersection, corridor):
+    def turnLeft(self, intersection):
+        self.timeOut = tElap
+        intersection.carOut(self)
         return False
 # not developed yet
+
+    def ttime(self):
+        return self.timeOut - self.timeIn
 
 
 # Define Intersection class
@@ -69,6 +82,7 @@ class Intersection:
         self.maxCars = rdCap   # max number of cars allowed on the road before clogging.
                                # This value is related to  length of the road segment and travel time.
         self.roadBlocked = 0   # if the queue is full of cars, the road is blocked
+        self.nextRoad = self
 
 
 
@@ -100,6 +114,7 @@ class Intersection:
                 print(0)
 
 
+
 # Representation of entire corridor made up of several roads in a specific order.
 #   handles passing of cars from one road to the next through intersections
 #   Stores and outputs relevant data
@@ -114,7 +129,14 @@ class Corridor:
         self.roadOrder.append(Twlth)
         self.roadOrder.append(Thrtn)
         self.roadOrder.append(Ftnth)
+        self.cars = []
 
+    def addCar(self, car):
+        self.cars.append(car)
+
+    def carExits(self, car):
+        self.cars.remove(car)
+        return car.ttime()
 
 # Initialize light times array for each intersection directions N,W,S,E in that order
 lT10 = np.array([[5, 5, 5, 5, 5, 5], [5, 5, 5, 5, 5, 5], [5, 5, 5, 5, 5, 5], [5, 5, 5, 5, 5, 5]])
