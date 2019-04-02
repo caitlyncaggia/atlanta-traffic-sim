@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[49]:
-
-
 import numpy as np
 import random 
 import matplotlib.pyplot as plt
@@ -114,17 +108,11 @@ class Peachtree_2lane:
         print(self.lane2)
 
 
-# In[50]:
-
-
 PT = Peachtree_2lane()
 t = 2
 for i in range(t):
     PT.update()
     PT.display()
-
-
-# In[ ]:
 
 
 
